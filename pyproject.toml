@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "model-fingerprint"
+description = "Content-derived fingerprints for GGUF and safetensors model files"
+dynamic = ["version"]
+authors = [
+    {name = "yvfu", email = "26564-yvfu@users.noreply.salsa.debian.org"},
+]
+requires-python = ">=3.9"
+license = "MIT"
+keywords = ["gguf", "safetensors", "llm", "fingerprint", "hash", "llama.cpp"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+[project.scripts]
+model-fingerprint = "model_fingerprint:main"
+
+[project.urls]
+Homepage = "https://github.com/o018BUm8UQEEY2e5/model-fingerprint"
+Repository = "https://github.com/o018BUm8UQEEY2e5/model-fingerprint"
+
+[tool.setuptools]
+py-modules = ["model_fingerprint"]
+
+[tool.setuptools.dynamic]
+version = {attr = "model_fingerprint.__version__"}
