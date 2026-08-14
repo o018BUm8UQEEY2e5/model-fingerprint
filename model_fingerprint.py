@@ -32,7 +32,7 @@ import hashlib
 import json
 import struct
 import sys
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -268,6 +268,8 @@ def parse_gguf(r: FileReader, path: Path) -> Model:
 
     # Tensor data starts at the aligned header end.
     header_end = r.pos
+    if alignment <= 0:
+        raise ModelError("invalid general.alignment value")
     data_start = (header_end + alignment - 1) // alignment * alignment
 
     # Derive each tensor's byte length. Prefer the exact size computed from the
@@ -367,7 +369,9 @@ def _tensor_digest(t: TensorInfo, reader: FileReader, data_start: int,
         n_read = min(chunk, remaining)
         block = reader.f.read(n_read)
         if not block:
-            break
+            raise ModelError(
+                f"unexpected EOF reading tensor {t.name!r} "
+                f"({remaining} bytes short)")
         h.update(block)
         remaining -= len(block)
     return h.digest()
@@ -489,6 +493,9 @@ def main(argv: list[str] | None = None) -> int:
             meta_fp = metadata_fingerprint(model)
     except ModelError as err:
         print(f"error: failed to parse {args.model}: {err}", file=sys.stderr)
+        return 1
+    except OSError as err:
+        print(f"error: cannot read {args.model}: {err}", file=sys.stderr)
         return 1
 
     summary = build_summary(model, content_fp, meta_fp)
