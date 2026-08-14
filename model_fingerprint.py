@@ -36,7 +36,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 # --------------------------------------------------------------------------
 # GGUF constants
